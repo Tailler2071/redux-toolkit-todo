@@ -1,18 +1,14 @@
 import {FC} from "react";
-import {TodoListProps} from "./TodoList.props.ts";
+import {useSelector} from "react-redux";
+import {RootState} from "../../store/store.ts";
 import TodoItem from "../TodoItem/TodoItem.tsx";
 
-const TodoList: FC<TodoListProps> = ({todos, removeTodo, toggleTodoComplete}) => {
+const TodoList: FC = () => {
+    const todos = useSelector((state: RootState) => state.todos.todosList);
+
     return (
         <ul className="list">
-            {todos.map(todo => (
-                <TodoItem
-                    key={todo.id}
-                    removeTodo={removeTodo}
-                    toggleTodoComplete={toggleTodoComplete}
-                    {...todo}
-                />
-            ))}
+            {todos.map(todo => <TodoItem key={todo.id} {...todo} />)}
         </ul>
     );
 };

@@ -1,42 +1,19 @@
 import {FC, useState} from "react";
-import {v4 as uuidv4} from "uuid";
+import {useDispatch} from "react-redux";
+import {addTodo} from "./store/slices/todoSlice.ts";
 import InputField from "./components/InputField/InputField.tsx";
 import TodoList from "./components/TodoList/TodoList.tsx";
 import "./App.css";
 
-interface Todo {
-    id: string;
-    text: string;
-    completed: boolean;
-}
-
 const App: FC = () => {
-    const [todos, setTodos] = useState<Todo[]>([]);
     const [text, setText] = useState<string>("");
+    const dispatch = useDispatch();
 
-    const addTodo = () => {
+    const addTask = () => {
         if (!text.trim().length) return;
 
-        const newTodo: Todo = {
-            id: uuidv4(),
-            text,
-            completed: false,
-        };
-
-        setTodos([...todos, newTodo]);
+        dispatch(addTodo({text}));
         setText("");
-    };
-
-    const toggleTodoComplete = (todoId: string) => {
-        const nextTodo = todos.map(todo =>
-            todo.id !== todoId ? todo : {...todo, completed: !todo.completed}
-        );
-
-        setTodos(nextTodo);
-    };
-
-    const removeTodo = (todoId: string) => {
-        setTodos(todos.filter(todo => todo.id !== todoId));
     };
 
     return (
@@ -44,13 +21,9 @@ const App: FC = () => {
             <InputField
                 text={text}
                 handleInput={setText}
-                handleSubmit={addTodo}
+                handleSubmit={addTask}
             />
-            <TodoList
-                todos={todos}
-                toggleTodoComplete={toggleTodoComplete}
-                removeTodo={removeTodo}
-            />
+            <TodoList/>
         </div>
     );
 };
