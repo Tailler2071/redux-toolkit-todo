@@ -1,6 +1,8 @@
-import "./App.css";
-import {useState} from "react";
+import {FC, useState} from "react";
 import {v4 as uuidv4} from "uuid";
+import InputField from "./components/InputField/InputField.tsx";
+import TodoList from "./components/TodoList/TodoList.tsx";
+import "./App.css";
 
 interface Todo {
     id: string;
@@ -8,7 +10,7 @@ interface Todo {
     completed: boolean;
 }
 
-const App = () => {
+const App: FC = () => {
     const [todos, setTodos] = useState<Todo[]>([]);
     const [text, setText] = useState<string>("");
 
@@ -26,13 +28,9 @@ const App = () => {
     };
 
     const toggleTodoComplete = (todoId: string) => {
-        const nextTodo = todos.map(todo => {
-            if (todo.id !== todoId) {
-                return todo;
-            }
-
-            return {...todo, completed: !todo.completed};
-        })
+        const nextTodo = todos.map(todo =>
+            todo.id !== todoId ? todo : {...todo, completed: !todo.completed}
+        );
 
         setTodos(nextTodo);
     };
@@ -43,29 +41,16 @@ const App = () => {
 
     return (
         <div className="App">
-            <div className="control">
-                <label>
-                    <input type="text" value={text} onChange={(e) => setText(e.target.value)}/>
-                </label>
-                <button onClick={addTodo}>Add Todo</button>
-            </div>
-
-            <ul className="list">
-                {todos.map(todo => (
-                    <li className="list-item" key={todo.id}>
-                        <div>
-                            <input
-                                className="checkbox"
-                                type="checkbox"
-                                checked={todo.completed}
-                                onChange={() => toggleTodoComplete(todo.id)}
-                            />
-                            <span>{todo.text}</span>
-                        </div>
-                        <button className="delete" onClick={() => removeTodo(todo.id)}>❌</button>
-                    </li>
-                ))}
-            </ul>
+            <InputField
+                text={text}
+                handleInput={setText}
+                handleSubmit={addTodo}
+            />
+            <TodoList
+                todos={todos}
+                toggleTodoComplete={toggleTodoComplete}
+                removeTodo={removeTodo}
+            />
         </div>
     );
 };
