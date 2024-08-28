@@ -3,7 +3,7 @@ import {TodoItemProps} from "./TodoItem.props.ts";
 import {useDispatch} from "react-redux";
 import {removeTodo, toggleTodoComplete} from "../../store/slices/todoSlice.ts";
 
-const TodoItem: FC<TodoItemProps> = ({id, completed, text}) => {
+const TodoItem: FC<TodoItemProps> = ({id, completed, title}) => {
     const dispatch = useDispatch();
 
     return (
@@ -15,7 +15,7 @@ const TodoItem: FC<TodoItemProps> = ({id, completed, text}) => {
                     checked={completed}
                     onChange={() => dispatch(toggleTodoComplete({id}))}
                 />
-                <span>{text}</span>
+                <span>{title}</span>
             </div>
             <button
                 className="delete"

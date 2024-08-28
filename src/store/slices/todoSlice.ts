@@ -1,19 +1,24 @@
 import {createSlice} from "@reduxjs/toolkit";
 import type {PayloadAction} from "@reduxjs/toolkit";
 import {v4 as uuidv4} from "uuid";
+import {fetchTodos} from "../asyncThunks/fetchTodos.ts";
 
-interface Todo {
+export interface Todo {
     id: string;
-    text: string;
+    title: string;
     completed: boolean;
 }
 
 export interface CounterState {
     todosList: Todo[];
+    status: null | "loading" | "resolved" | "rejected";
+    error: undefined | { message: string };
 }
 
 const initialState: CounterState = {
     todosList: [],
+    status: null,
+    error: undefined
 };
 
 export const todoSlice = createSlice({
@@ -23,7 +28,7 @@ export const todoSlice = createSlice({
         addTodo: (state, action: PayloadAction<{ text: string }>) => {
             state.todosList.push({
                 id: uuidv4(),
-                text: action.payload.text,
+                title: action.payload.text,
                 completed: false,
             });
         },
@@ -37,6 +42,20 @@ export const todoSlice = createSlice({
                 nextTodo.completed = !nextTodo.completed;
             }
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(fetchTodos.pending, (state) => {
+            state.status = "loading";
+            state.error = undefined;
+        });
+        builder.addCase(fetchTodos.fulfilled, (state, action) => {
+            state.status = "resolved";
+            state.todosList = action.payload;
+        });
+        builder.addCase(fetchTodos.rejected, (state, action) => {
+            state.status = "rejected";
+            state.error = action.payload;
+        });
     },
 });
 
