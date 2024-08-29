@@ -1,14 +1,14 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {RootState} from "../store.ts";
-import {toggleTodoComplete} from "../slices/todoSlice.ts";
+import {Todo} from "../slices/todoSlice.ts";
 
 interface ToggleStatusError {
     message: string;
 }
 
-export const toggleStatus = createAsyncThunk<void, string, { rejectValue: ToggleStatusError, state: RootState }>(
+export const toggleStatus = createAsyncThunk<Todo, string, { rejectValue: ToggleStatusError, state: RootState }>(
     "todos/toggleStatus",
-    async (id, {rejectWithValue, dispatch, getState}) => {
+    async (id, {rejectWithValue, getState}) => {
         const todo = getState().todos.todosList.find(todo => todo.id === id);
 
         if (!todo) {
@@ -26,13 +26,7 @@ export const toggleStatus = createAsyncThunk<void, string, { rejectValue: Toggle
                 })
             });
 
-            if (!response.ok) {
-                return rejectWithValue({
-                    message: `Failed to delete todo with id ${id}`,
-                });
-            }
-
-            dispatch(toggleTodoComplete({id}));
+            return await response.json();
         } catch (err) {
             return rejectWithValue({
                 message: err instanceof Error ? err.message : "An unknown error occurred",

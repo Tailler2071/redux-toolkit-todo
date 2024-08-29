@@ -1,14 +1,14 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
 import {v4 as uuidv4} from "uuid";
-import {addTodo} from "../slices/todoSlice.ts";
+import {Todo} from "../slices/todoSlice.ts";
 
 interface AddNewTodoError {
     message: string;
 }
 
-export const addNewTodo = createAsyncThunk<void, string,  { rejectValue: AddNewTodoError}>(
+export const addNewTodo = createAsyncThunk<Todo, string, { rejectValue: AddNewTodoError }>(
     "todos/addNewTodo",
-    async (text, {rejectWithValue, dispatch}) => {
+    async (text, {rejectWithValue}) => {
         try {
             const todo = {
                 title: text,
@@ -25,8 +25,7 @@ export const addNewTodo = createAsyncThunk<void, string,  { rejectValue: AddNewT
                 body: JSON.stringify(todo)
             });
 
-            const data = await response.json();
-            dispatch(addTodo(data))
+            return await response.json();
         } catch (err) {
             return rejectWithValue({
                 message: err instanceof Error ? err.message : "An unknown error occurred",

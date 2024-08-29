@@ -1,13 +1,12 @@
 import {createAsyncThunk} from "@reduxjs/toolkit";
-import {removeTodo} from "../slices/todoSlice.ts";
 
 interface DeleteTodoError {
     message: string;
 }
 
-export const deleteTodo = createAsyncThunk<void, string, { rejectValue: DeleteTodoError }>(
+export const deleteTodo = createAsyncThunk<string, string, { rejectValue: DeleteTodoError }>(
     "todos/deleteTodo",
-    async (id, {rejectWithValue, dispatch}) => {
+    async (id, {rejectWithValue}) => {
         try {
             const response = await fetch(`https://jsonplaceholder.typicode.com/todos/${id}`, {
                 method: "DELETE",
@@ -19,7 +18,7 @@ export const deleteTodo = createAsyncThunk<void, string, { rejectValue: DeleteTo
                 });
             }
 
-            dispatch(removeTodo({id}));
+            return id;
         } catch (err) {
             return rejectWithValue({
                 message: err instanceof Error ? err.message : "An unknown error occurred",
