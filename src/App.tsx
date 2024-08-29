@@ -1,8 +1,8 @@
 import {FC, useEffect, useState} from "react";
 import {useDispatch, useSelector} from "react-redux";
 import {AppDispatch, RootState} from "./store/store.ts";
-import {addTodo} from "./store/slices/todoSlice.ts";
 import {fetchTodos} from "./store/asyncThunks/fetchTodos.ts";
+import {addNewTodo} from "./store/asyncThunks/addNewTodo.ts";
 import InputField from "./components/InputField/InputField.tsx";
 import TodoList from "./components/TodoList/TodoList.tsx";
 import "./App.css";
@@ -15,7 +15,7 @@ const App: FC = () => {
     const addTask = () => {
         if (!text.trim().length) return;
 
-        dispatch(addTodo({text}));
+        dispatch(addNewTodo(text));
         setText("");
     };
 

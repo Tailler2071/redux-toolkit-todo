@@ -1,36 +1,39 @@
 import {createSlice} from "@reduxjs/toolkit";
 import type {PayloadAction} from "@reduxjs/toolkit";
-import {v4 as uuidv4} from "uuid";
 import {fetchTodos} from "../asyncThunks/fetchTodos.ts";
+import {deleteTodo} from "../asyncThunks/deleteTodo.ts";
+import {toggleStatus} from "../asyncThunks/toggleStatus.ts";
 
 export interface Todo {
     id: string;
     title: string;
     completed: boolean;
+    userId: string;
 }
 
-export interface CounterState {
+export interface TodoState {
     todosList: Todo[];
     status: null | "loading" | "resolved" | "rejected";
     error: undefined | { message: string };
 }
 
-const initialState: CounterState = {
+const initialState: TodoState = {
     todosList: [],
     status: null,
     error: undefined
+};
+
+const setError = (state: TodoState, action: PayloadAction<{ message: string } | undefined>) => {
+    state.status = "rejected";
+    state.error = action.payload;
 };
 
 export const todoSlice = createSlice({
     name: "todos",
     initialState,
     reducers: {
-        addTodo: (state, action: PayloadAction<{ text: string }>) => {
-            state.todosList.push({
-                id: uuidv4(),
-                title: action.payload.text,
-                completed: false,
-            });
+        addTodo: (state, action: PayloadAction<Todo>) => {
+            state.todosList.push(action.payload);
         },
         removeTodo: (state, action: PayloadAction<{ id: string }>) => {
             state.todosList = state.todosList.filter(todo => todo.id !== action.payload.id);
@@ -52,10 +55,9 @@ export const todoSlice = createSlice({
             state.status = "resolved";
             state.todosList = action.payload;
         });
-        builder.addCase(fetchTodos.rejected, (state, action) => {
-            state.status = "rejected";
-            state.error = action.payload;
-        });
+        builder.addCase(fetchTodos.rejected, setError);
+        builder.addCase(deleteTodo.rejected, setError);
+        builder.addCase(toggleStatus.rejected, setError);
     },
 });
 
