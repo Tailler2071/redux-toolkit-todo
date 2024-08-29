@@ -1,12 +1,11 @@
 import {FC} from "react";
 import {TodoItemProps} from "./TodoItem.props.ts";
-import {useDispatch} from "react-redux";
-import {AppDispatch} from "../../store/store.ts";
 import {toggleStatus} from "../../store/asyncThunks/toggleStatus.ts";
 import {deleteTodo} from "../../store/asyncThunks/deleteTodo.ts";
+import {useAppDispatch} from "../../store/hooks/hooks.ts";
 
 const TodoItem: FC<TodoItemProps> = ({id, completed, title}) => {
-    const dispatch: AppDispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const handleDelete = async () => {
         try {

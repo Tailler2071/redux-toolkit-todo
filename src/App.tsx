@@ -1,5 +1,5 @@
 import {FC, useEffect, useState} from "react";
-import {useDispatch, useSelector} from "react-redux";
+import {useAppDispatch, useAppSelector} from "./store/hooks/hooks.ts";
 import {AppDispatch, RootState} from "./store/store.ts";
 import {fetchTodos} from "./store/asyncThunks/fetchTodos.ts";
 import {addNewTodo} from "./store/asyncThunks/addNewTodo.ts";
@@ -9,8 +9,8 @@ import "./App.css";
 
 const App: FC = () => {
     const [text, setText] = useState<string>("");
-    const {status, error} = useSelector((state: RootState) => state.todos)
-    const dispatch: AppDispatch = useDispatch();
+    const {status, error} = useAppSelector((state: RootState) => state.todos)
+    const dispatch: AppDispatch = useAppDispatch();
 
     const addTask = () => {
         if (!text.trim().length) return;
