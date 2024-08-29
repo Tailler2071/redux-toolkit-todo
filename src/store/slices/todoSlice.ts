@@ -26,11 +26,15 @@ const initialState: TodoState = {
 
 const isError = (action: UnknownAction) => {
     return action.type.endsWith("rejected");
-}
+};
 
 export const todoSlice = createSlice({
     name: "todos",
     initialState,
+    selectors: {
+        selectTodos: state => state,
+        selectAllTodos: state => state.todosList
+    },
     reducers: {
         // addTodo: (state, action: PayloadAction<Todo>) => {
         //     state.todosList.push(action.payload);
@@ -74,10 +78,11 @@ export const todoSlice = createSlice({
         builder.addMatcher(isError, (state, action: PayloadAction<{ message: string } | undefined>) => {
             state.error = action.payload;
             state.status = "rejected";
-        })
+        });
     },
 });
 
 //export const {addTodo, removeTodo, toggleTodoComplete} = todoSlice.actions;
+export const {selectTodos, selectAllTodos} = todoSlice.selectors;
 
 export default todoSlice.reducer;

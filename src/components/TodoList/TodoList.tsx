@@ -1,10 +1,10 @@
 import {FC} from "react";
-import {RootState} from "../../store/store.ts";
 import TodoItem from "../TodoItem/TodoItem.tsx";
 import {useAppSelector} from "../../store/hooks/hooks.ts";
+import {selectAllTodos} from "../../store/slices/todoSlice.ts";
 
 const TodoList: FC = () => {
-    const todos = useAppSelector((state: RootState) => state.todos.todosList);
+    const todos = useAppSelector(selectAllTodos);
 
     return (
         <ul className="list">
